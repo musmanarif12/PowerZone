@@ -7,9 +7,9 @@ import { doc, onSnapshot, setDoc, updateDoc, collection, deleteDoc } from 'fireb
 
 interface AdminContextType {
   products: Product[];
-  addProduct: (p: Product) => void;
-  updateProduct: (p: Product) => void;
-  deleteProduct: (id: string) => void;
+  addProduct: (p: Product) => Promise<void>;
+  updateProduct: (p: Product) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
   brands: string[];
   categories: string[];
   addBrand: (name: string) => Promise<void>;

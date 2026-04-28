@@ -4,10 +4,22 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Package, TrendingUp, AlertTriangle, LogOut, RefreshCw, Users, ShoppingBag, CheckCircle, Settings, Minus } from 'lucide-react';
 import { db, storage } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAdmin } from '@/lib/adminContext';
 import { Product } from '@/lib/products';
 import styles from './AdminPage.module.css';
+
+const dataUrlToBlob = (dataUrl: string) => {
+  const parts = dataUrl.split(';base64,');
+  const contentType = parts[0].split(':')[1];
+  const raw = window.atob(parts[1]);
+  const rawLength = raw.length;
+  const uInt8Array = new Uint8Array(rawLength);
+  for (let i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new Blob([uInt8Array], { type: contentType });
+};
 
 const EMPTY_FORM: Omit<Product, 'id'> = {
   name: '',
@@ -130,9 +142,10 @@ export default function AdminPage() {
       
       // If image is a Base64 string from upload, push to Storage
       if (imageUrl.startsWith('data:')) {
+        const blob = dataUrlToBlob(imageUrl);
         const productSlug = form.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         const storageRef = ref(storage, `products/${productSlug}-${Date.now()}.jpg`);
-        await uploadString(storageRef, imageUrl, 'data_url');
+        await uploadBytes(storageRef, blob, { contentType: 'image/jpeg' });
         imageUrl = await getDownloadURL(storageRef);
       }
 
@@ -140,11 +153,11 @@ export default function AdminPage() {
       
       if (editId) {
         await updateProduct(finalProduct);
-        setSuccess('Product updated with Cloud Image!');
+        setSuccess('Changes Live! Cloud link updated.');
         setEditId(null);
       } else {
         await addProduct(finalProduct);
-        setSuccess('Product added with Cloud Image!');
+        setSuccess('New Product Live! Image on Cloud.');
       }
       setForm(EMPTY_FORM);
       setFileKey(Date.now());
