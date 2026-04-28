@@ -1,0 +1,162 @@
+.page {
+  padding: 10rem 0;
+  background-color: #f8fcf9;
+  min-height: 100vh;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #666;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 3rem;
+  transition: var(--transition);
+}
+
+.backBtn:hover {
+  color: var(--whatsapp-green);
+  transform: translateX(-5px);
+}
+
+.card {
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+}
+
+.header {
+  background-color: var(--whatsapp-dark);
+  color: white;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.planIcon {
+  color: var(--whatsapp-green);
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.header h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  padding: 5rem;
+  gap: 5rem;
+}
+
+.pricingSide {
+  display: flex;
+  flex-direction: column;
+}
+
+.priceTag {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.currency {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--whatsapp-green);
+}
+
+.amount {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--whatsapp-dark);
+}
+
+.period {
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.planDesc {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 3rem;
+}
+
+.joinBtn {
+  background-color: var(--whatsapp-green);
+  color: white;
+  padding: 1.5rem 2rem;
+  border: none;
+  border-radius: 40px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.joinBtn:hover {
+  background-color: var(--whatsapp-medium);
+  transform: translateY(-5px);
+}
+
+.featuresSide h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: var(--whatsapp-dark);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.featureItem {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 1.1rem;
+  color: #444;
+  padding: 0.5rem 0;
+}
+
+.check {
+  color: var(--whatsapp-green);
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .body {
+    grid-template-columns: 1fr;
+    padding: 3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .amount {
+    font-size: 3rem;
+  }
+}

@@ -1,0 +1,242 @@
+.page {
+  padding: 7rem 0 4rem;
+  min-height: 100vh;
+}
+
+.inner {}
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-gray);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back:hover { color: var(--primary-green); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.imageWrap {
+  position: relative;
+  background: #f8f8f8;
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+}
+
+.badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.sale { background: #e53935; color: #fff; }
+.hot { background: #ff6d00; color: #fff; }
+.new { background: var(--primary-green); color: #111; }
+
+.image {
+  max-height: 340px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.brand {
+  font-size: 0.78rem;
+  color: var(--primary-green);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.name {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.25;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ratingVal {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f59e0b;
+  margin-left: 4px;
+}
+
+.ratingCount {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.pricingBlock {
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #111;
+  font-family: 'Poppins', sans-serif;
+}
+
+.original {
+  font-size: 1rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.discount {
+  background: #e53935;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.saving {
+  font-size: 0.82rem;
+  color: var(--primary-green);
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+
+.desc h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--text-dark);
+}
+
+.desc p {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  line-height: 1.7;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+
+.details strong { color: var(--text-dark); }
+
+.actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.cartBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary-green);
+  color: #111;
+  font-weight: 800;
+  padding: 0.85rem 2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.cartBtn:hover:not(:disabled) {
+  background: var(--primary-green-dark);
+  transform: translateY(-2px);
+}
+
+.cartBtn:disabled { background: #e0e0e0; color: #999; cursor: not-allowed; }
+
+.waBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #25d366;
+  color: #fff;
+  font-weight: 800;
+  padding: 0.85rem 2rem;
+  border-radius: 999px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.waBtn:hover { background: #20b558; transform: translateY(-2px); }
+
+.backBtn {
+  background: var(--primary-green);
+  color: #111;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .page { padding: 6rem 1.5rem 3rem; }
+}

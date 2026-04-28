@@ -1,0 +1,248 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  padding: 1rem 0;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+}
+
+.scrolled {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  font-family: 'Poppins', sans-serif;
+}
+
+.logo span span {
+  color: var(--whatsapp-green);
+}
+
+.logoIcon {
+  width: 28px;
+  height: 28px;
+  color: var(--whatsapp-green);
+}
+
+.navLinks {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.navLinks a {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.navLinks a:hover {
+  color: var(--primary-green);
+}
+
+.shopLink {
+  color: var(--primary-green) !important;
+  font-weight: 700 !important;
+  background: rgba(0, 200, 83, 0.1);
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+}
+
+.shopLink:hover {
+  background: var(--primary-green) !important;
+  color: #111 !important;
+}
+
+.cartBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dark);
+  padding: 0.3rem;
+  transition: color 0.2s;
+}
+
+.cartBtn:hover {
+  color: var(--primary-green);
+}
+
+.cartBadge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--primary-green);
+  color: #111;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ctaButton {
+  background-color: var(--whatsapp-green);
+  color: white;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-green);
+}
+
+.ctaButton:hover {
+  background-color: var(--whatsapp-medium);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.navAuthBtn {
+  background: none;
+  border: 1.5px solid var(--primary-green);
+  color: var(--primary-green);
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+}
+
+.navAuthBtn:hover {
+  background: var(--primary-green);
+  color: #111;
+  box-shadow: 0 4px 12px rgba(0,200,83,0.3);
+}
+
+.userBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 200, 83, 0.1);
+  color: var(--primary-green);
+  padding: 0.6rem 1rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  border: 1.5px solid rgba(0, 200, 83, 0.3);
+}
+
+.userControls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ordersBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 200, 83, 0.1);
+  color: var(--primary-green);
+  border: 1.5px solid var(--primary-green);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.ordersBtn:hover {
+  background: var(--primary-green);
+  color: #111;
+}
+
+.navLogoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+  border: 1.5px solid #ff4444;
+  padding: 0.5rem 1.1rem;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.navLogoutBtn:hover {
+  background: #ff4444;
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001; /* Ensure hamburger is clickable on top */
+}
+
+@media (max-width: 992px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .navLinks {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    transition: clip-path 0.4s ease-in-out;
+  }
+
+  .navLinks.active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .navLinks a {
+    font-size: 1.2rem;
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 10px;
+  }
+}

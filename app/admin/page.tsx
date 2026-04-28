@@ -1,0 +1,597 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2, Edit2, Package, TrendingUp, AlertTriangle, LogOut, RefreshCw, Users, ShoppingBag, CheckCircle, Settings } from 'lucide-react';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { useAdmin } from '@/lib/adminContext';
+import { Product } from '@/lib/products';
+import styles from './AdminPage.module.css';
+
+const EMPTY_FORM: Omit<Product, 'id'> = {
+  name: '',
+  brand: '',
+  category: 'Whey Protein',
+  price: 0,
+  originalPrice: 0,
+  image: '',
+  badge: null,
+  inStock: true,
+  rating: 5,
+  reviews: 0,
+  description: '',
+  isOnWebsite: true,
+  isOnStore: true,
+};
+
+export default function AdminPage() {
+  const { 
+    products, addProduct, updateProduct, deleteProduct,
+    brands, categories,
+    addBrand, updateBrand, deleteBrand,
+    addCategory, updateCategory, deleteCategory
+  } = useAdmin();
+  const [tab, setTab] = useState<'cms' | 'orders' | 'users' | 'config'>('cms');
+  const [form, setForm] = useState<Omit<Product, 'id'>>({ ...EMPTY_FORM, category: categories[0] || 'Whey Protein' });
+  const [editId, setEditId] = useState<string | null>(null);
+  const [success, setSuccess] = useState('');
+  const [expandedCat, setExpandedCat] = useState<string | null>(null);
+  const [fileKey, setFileKey] = useState(Date.now());
+
+  // AUTH STATE
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === (process.env.NEXT_PUBLIC_ADMIN_USER || 'powerzone') && 
+        password === (process.env.NEXT_PUBLIC_ADMIN_PASS || 'bilal123*')) {
+      setIsAuthenticated(true);
+      setLoginError('');
+    } else {
+      setLoginError('Invalid username or password');
+    }
+  };
+
+  const [dbOrders, setDbOrders] = useState<any[]>([]);
+  const [dbUsers, setDbUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const fetchDB = async () => {
+      try {
+        const oSnap = await getDocs(collection(db, 'orders'));
+        const uSnap = await getDocs(collection(db, 'users'));
+        setDbOrders(oSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a: any, b: any) => {
+           const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+           const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+           return timeB - timeA;
+        }));
+        setDbUsers(uSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()));
+      } catch (e) {
+        console.error("Error fetching db", e);
+      }
+    };
+    fetchDB();
+  }, [isAuthenticated, tab]);
+
+  const handleMarkDone = async (id: string) => {
+    try {
+      await updateDoc(doc(db, 'orders', id), { status: 'Done' });
+      setDbOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'Done' } : o));
+    } catch (e) {
+      console.error('Error marking done', e);
+    }
+  };
+
+  const handleDeleteOrder = async (id: string) => {
+    if (!confirm('Are you sure you want to completely delete this order?')) return;
+    try {
+      await deleteDoc(doc(db, 'orders', id));
+      setDbOrders(prev => prev.filter(o => o.id !== id));
+    } catch (e) {
+      console.error('Error deleting order', e);
+    }
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    if (!confirm('Are you sure you want to completely delete this user?')) return;
+    try {
+      await deleteDoc(doc(db, 'users', id));
+      setDbUsers(prev => prev.filter(u => u.id !== id));
+    } catch (e) {
+      console.error('Error deleting user', e);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.image.trim() || form.price <= 0) {
+      alert('Please fill in product name, image URL, and price.');
+      return;
+    }
+    if (editId) {
+      updateProduct({ ...form, id: editId });
+      setSuccess('Product updated successfully!');
+      setEditId(null);
+    } else {
+      addProduct({ ...form, id: `prod-${Date.now()}` });
+      setSuccess('Product added successfully!');
+    }
+    setForm(EMPTY_FORM);
+    setFileKey(Date.now());
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if (ev.target?.result) {
+        setForm(prev => ({ ...prev, image: ev.target!.result as string }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleEdit = (p: Product) => {
+    setEditId(p.id);
+    const { id, ...rest } = p;
+    setForm(rest);
+    setFileKey(Date.now());
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const formatPrice = (p: number) => `Rs ${p.toLocaleString('en-PK')}`;
+  const activeCount = products.filter(p => p.inStock).length;
+
+  const groupedByCat = categories.reduce((acc, cat) => {
+    acc[cat] = products.filter(p => p.category === cat);
+    return acc;
+  }, {} as Record<string, Product[]>);
+
+  if (!isAuthenticated) {
+    return (
+      <div className={styles.loginPage}>
+        <div className={styles.loginMain}>
+          <div className={styles.loginBrand}>⚡ PowerZone Admin</div>
+          <h1 className={styles.loginTitle}>Welcome Back</h1>
+          <p className={styles.loginSub}>Enter your credentials to access the store dashboard.</p>
+          <form onSubmit={handleLogin} className={styles.loginForm}>
+            {loginError && <div className={styles.loginError}>{loginError}</div>}
+            <div className={styles.loginField}>
+              <label>Username</label>
+              <input type="text" placeholder="e.g. powerzone" value={username} onChange={e => setUsername(e.target.value)} required />
+            </div>
+            <div className={styles.loginField}>
+              <label>Password</label>
+              <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
+            </div>
+            <button type="submit" className={styles.loginBtn}>Secure Login</button>
+          </form>
+          <a href="/" className={styles.loginBack}>← Back to Website</a>
+        </div>
+        <div className={styles.loginHero}>
+          <img src="/assets/img1.jpg" alt="PowerZone Gym" />
+          <div className={styles.loginHeroOverlay}>
+            <h2>Manage Your Store.</h2>
+            <p>Control inventory, track stock, and power the website.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.page}>
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <span className={styles.logo}>⚡ PowerZone</span>
+          <span className={styles.adminLabel}>Store Administrator Dashboard</span>
+        </div>
+        <div className={styles.headerRight}>
+          <button className={`${styles.tabBtn} ${tab === 'cms' ? styles.tabActive : ''}`} onClick={() => setTab('cms')}>
+            Website Products (CMS)
+          </button>
+          <button className={`${styles.tabBtn} ${tab === 'orders' ? styles.tabActive : ''}`} onClick={() => setTab('orders')}>
+            <ShoppingBag size={14} style={{display:'inline', marginBottom:'-2px'}} /> Database Orders
+          </button>
+          <button className={`${styles.tabBtn} ${tab === 'users' ? styles.tabActive : ''}`} onClick={() => setTab('users')}>
+            <Users size={14} style={{display:'inline', marginBottom:'-2px'}} /> Registered Customers
+          </button>
+          <button className={`${styles.tabBtn} ${tab === 'config' ? styles.tabActive : ''}`} onClick={() => setTab('config')}>
+            <Settings size={14} style={{display:'inline', marginBottom:'-2px'}} /> Site Config
+          </button>
+          
+          {tab === 'cms' && (
+            <button className={styles.clearBtn} onClick={() => { setForm(EMPTY_FORM); setEditId(null); setFileKey(Date.now()); }}>
+              Clear Form
+            </button>
+          )}
+
+          <a href="/" className={styles.logoutBtn}>
+            <LogOut size={15} /> Logout
+          </a>
+        </div>
+      </div>
+
+      {success && <div className={styles.successBar}>{success}</div>}
+
+      {/* CMS Tab */}
+      {tab === 'cms' && (
+        <div className={styles.layout}>
+          {/* Left - Form */}
+          <div className={styles.formPanel}>
+            <h2 className={styles.panelTitle}>{editId ? '✏️ Edit Product' : '➕ Add New Product'}</h2>
+
+            {/* Upload destinations */}
+            <div className={styles.uploadToggles}>
+              <label className={styles.toggle}>
+                <input
+                  type="checkbox"
+                  checked={form.isOnStore}
+                  onChange={e => setForm({ ...form, isOnStore: e.target.checked })}
+                />
+                <span className={styles.toggleLabel}>Upload to Store (Shop Grid)</span>
+              </label>
+            </div>
+
+            <form onSubmit={handleSubmit} className={styles.form}>
+              {/* Image */}
+              <div className={styles.field}>
+                <label>Product Image (Upload from Desktop)</label>
+                <div className={styles.imageRow}>
+                  <input
+                    key={fileKey}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                  {form.image && (
+                    <img src={form.image} alt="preview" className={styles.imgPreview} onError={e => (e.currentTarget.style.display = 'none')} />
+                  )}
+                </div>
+              </div>
+
+              {/* Name & Brand */}
+              <div className={styles.row2}>
+                <div className={styles.field}>
+                  <label>Product Name</label>
+                  <input
+                    value={form.name}
+                    onChange={e => setForm({ ...form, name: e.target.value })}
+                    placeholder="e.g. Gold Standard Whey"
+                    required
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Brand</label>
+                  <select value={form.brand} onChange={e => setForm({ ...form, brand: e.target.value })}>
+                    <option value="">Select a Brand</option>
+                    {brands.map(b => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className={styles.field}>
+                <label>Product Description</label>
+                <textarea
+                  rows={3}
+                  value={form.description}
+                  onChange={e => setForm({ ...form, description: e.target.value })}
+                  placeholder="Enter product description..."
+                />
+              </div>
+
+              {/* Prices */}
+              <div className={styles.row2}>
+                <div className={styles.field}>
+                  <label>Current Price (Rs)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.price || ''}
+                    onChange={e => setForm({ ...form, price: Number(e.target.value) })}
+                    placeholder="e.g. 14500"
+                    required
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>Original Price (Rs)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.originalPrice || ''}
+                    onChange={e => setForm({ ...form, originalPrice: Number(e.target.value) })}
+                    placeholder="e.g. 17000"
+                  />
+                </div>
+              </div>
+
+              {/* Category */}
+              <div className={styles.field}>
+                <label>Category Placement</label>
+                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+
+              {/* Badge + Stock */}
+              <div className={styles.checkRow}>
+                <label className={styles.toggle}>
+                  <input
+                    type="checkbox"
+                    checked={form.badge === 'SALE'}
+                    onChange={e => setForm({ ...form, badge: e.target.checked ? 'SALE' : null })}
+                  />
+                  <span className={styles.toggleLabel}>🏷️ Apply Red SALE Tag</span>
+                </label>
+                <label className={styles.toggle}>
+                  <input
+                    type="checkbox"
+                    checked={!form.inStock}
+                    onChange={e => setForm({ ...form, inStock: !e.target.checked })}
+                  />
+                  <span className={styles.toggleLabel}>🚫 Mark OUT OF STOCK</span>
+                </label>
+              </div>
+
+              <button type="submit" className={styles.uploadBtn}>
+                <Plus size={18} />
+                {editId ? 'Save Changes' : 'Upload to Selected Views'}
+              </button>
+              {editId && (
+                <button type="button" className={styles.cancelBtn} onClick={() => { setEditId(null); setForm(EMPTY_FORM); setFileKey(Date.now()); }}>
+                  Cancel Edit
+                </button>
+              )}
+            </form>
+          </div>
+
+          {/* Right - Inventory */}
+          <div className={styles.inventoryPanel}>
+            <div className={styles.inventoryHeader}>
+              <h2 className={styles.panelTitle}>Live Inventory Management</h2>
+            </div>
+            <div className={styles.statBox}>
+              <div className={styles.statLabel}>Total Active Listings</div>
+              <div className={styles.statNum}>{activeCount}</div>
+              <div className={styles.statSub}>out of {products.length} total products</div>
+            </div>
+
+            {categories.map(cat => {
+              const catProds = groupedByCat[cat] || [];
+              if (catProds.length === 0) return null;
+              return (
+                <div key={cat} className={styles.catBlock}>
+                  <button
+                    className={styles.catHeader}
+                    onClick={() => setExpandedCat(expandedCat === cat ? null : cat)}
+                  >
+                    <span>{cat} ({catProds.length})</span>
+                    <span>{expandedCat === cat ? '▲' : '▼'}</span>
+                  </button>
+                  {expandedCat === cat && (
+                    <div className={styles.catList}>
+                      {catProds.map(p => (
+                        <div key={p.id} className={styles.productRow}>
+                          <img src={p.image} alt={p.name} className={styles.productThumb} onError={e => (e.currentTarget.style.display = 'none')} />
+                          <div className={styles.productInfo}>
+                            <div className={styles.productName}>{p.name}</div>
+                            <div className={styles.productMeta}>
+                              <span>{formatPrice(p.price)}</span>
+                              {!p.inStock && <span className={styles.oos}>OUT OF STOCK</span>}
+                            </div>
+                          </div>
+                          <div className={styles.productActions}>
+                            <button className={styles.editBtn} onClick={() => handleEdit(p)} title="Edit">
+                              <Edit2 size={13} />
+                            </button>
+                            <button className={styles.delBtn} onClick={() => { if (confirm(`Delete "${p.name}"?`)) deleteProduct(p.id); }} title="Delete">
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Orders Tab */}
+      {tab === 'orders' && (
+        <div className={styles.erpTab}>
+          <div className={styles.erpCards}>
+            <div className={styles.erpCard}>
+              <ShoppingBag size={35} className={styles.erpIcon} />
+              <div>
+                <div className={styles.erpNum}>{dbOrders.length}</div>
+                <div className={styles.erpLabel}>Total Placed Orders</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className={styles.erpTable}>
+            <div className={styles.tableHeader} style={{ gridTemplateColumns: 'minmax(80px, 1fr) 1fr 2fr 1fr 0.8fr 0.8fr 0.8fr' }}>
+              <div>Order ID</div>
+              <div>Date</div>
+              <div>Customer Info</div>
+              <div>Items</div>
+              <div>Total</div>
+              <div>Status</div>
+              <div>Actions</div>
+            </div>
+            {dbOrders.map(o => (
+              <div key={o.id} className={styles.tableRow} style={{ gridTemplateColumns: 'minmax(80px, 1fr) 1fr 2fr 1fr 0.8fr 0.8fr 0.8fr' }}>
+                <div style={{fontWeight:800}}>{o.orderId}</div>
+                <div style={{color:'#666'}}>{o.createdAt ? new Date(o.createdAt.toMillis()).toLocaleString() : 'N/A'}</div>
+                <div>
+                  <div style={{fontWeight:600}}>{o.customerInfo?.name}</div>
+                  <div style={{fontSize:'0.75rem', color:'#666'}}>{o.customerInfo?.mobile}</div>
+                  <div style={{fontSize:'0.7rem', color:'#888'}}>
+                    {o.customerInfo?.address}, {o.customerInfo?.city}
+                  </div>
+                </div>
+                <div style={{fontSize:'0.75rem'}}>
+                  {o.items?.map((i: any) => (
+                     <div key={i.id}>{i.quantity}x {i.name}</div>
+                  ))}
+                </div>
+                <div style={{fontWeight:800, color:'var(--primary-green)'}}>
+                  Rs {o.totalPrice?.toLocaleString()}
+                </div>
+                <div style={{fontSize:'0.78rem', color:'#111', fontWeight:700, display: 'flex', gap: '0.3rem', alignItems: 'center'}}>
+                  {o.status === 'Done' ? (
+                    <><CheckCircle size={14} color="var(--primary-green)" /> Done</>
+                  ) : (
+                    <span style={{color: '#888'}}>Received</span>
+                  )}
+                </div>
+                <div style={{display:'flex', gap:'0.5rem', alignItems:'center'}}>
+                  {o.status !== 'Done' && (
+                    <button onClick={() => handleMarkDone(o.id)} title="Mark Done" style={{background: 'rgba(0,200,83,0.1)', color: 'var(--primary-green)', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex'}}>
+                      <CheckCircle size={15} />
+                    </button>
+                  )}
+                  <button onClick={() => handleDeleteOrder(o.id)} title="Delete Order" style={{background: 'rgba(255,0,0,0.1)', color: 'red', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex'}}>
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Config Tab */}
+      {tab === 'config' && (
+        <div className={styles.configTab}>
+          {/* Brand Management */}
+          <div className={styles.configCard}>
+            <h3>
+              <TrendingUp size={20} color="var(--primary-green)" /> Manage Brands
+            </h3>
+            <div className={styles.configInputRow}>
+              <input 
+                id="newBrandInput"
+                type="text" 
+                placeholder="New Brand Name..." 
+                className={styles.configInput}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const input = e.currentTarget;
+                    if (input.value) { addBrand(input.value); input.value = ''; }
+                  }
+                }}
+              />
+              <button 
+                onClick={() => {
+                  const input = document.getElementById('newBrandInput') as HTMLInputElement;
+                  if (input.value) { addBrand(input.value); input.value = ''; }
+                }}
+                className={styles.uploadBtn}
+                style={{ margin: 0, padding: '0.6rem 1.2rem' }}
+              >
+                Add
+              </button>
+            </div>
+            <div className={styles.configList}>
+              {brands.map(b => (
+                <div key={b} className={styles.configItem}>
+                  <span className={styles.configItemLabel}>{b}</span>
+                  <div className={styles.configItemActions}>
+                    <button 
+                      className={`${styles.configActionBtn} ${styles.configEditBtn}`}
+                      onClick={() => {
+                        const newName = prompt('Edit Brand Name:', b);
+                        if (newName && newName !== b) updateBrand(b, newName);
+                      }}
+                      title="Edit"
+                    >
+                      <Edit2 size={14} />
+                    </button>
+                    <button 
+                      className={`${styles.configActionBtn} ${styles.configDelBtn}`}
+                      onClick={() => { if (confirm(`Delete Brand "${b}"?`)) deleteBrand(b); }}
+                      title="Delete"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Category Management */}
+          <div className={styles.configCard}>
+            <h3>
+              <Package size={20} color="var(--primary-green)" /> Manage Categories
+            </h3>
+            <div className={styles.configInputRow}>
+              <input 
+                id="newCatInput"
+                type="text" 
+                placeholder="New Category..." 
+                className={styles.configInput}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const input = e.currentTarget;
+                    if (input.value) { addCategory(input.value); input.value = ''; }
+                  }
+                }}
+              />
+              <button 
+                onClick={() => {
+                  const input = document.getElementById('newCatInput') as HTMLInputElement;
+                  if (input.value) { addCategory(input.value); input.value = ''; }
+                }}
+                className={styles.uploadBtn}
+                style={{ margin: 0, padding: '0.6rem 1.2rem' }}
+              >
+                Add
+              </button>
+            </div>
+            <div className={styles.configList}>
+              {categories.map(c => (
+                <div key={c} className={styles.configItem}>
+                  <span className={styles.configItemLabel}>{c}</span>
+                  <div className={styles.configItemActions}>
+                    <button 
+                      className={`${styles.configActionBtn} ${styles.configEditBtn}`}
+                      onClick={() => {
+                        const newName = prompt('Edit Category:', c);
+                        if (newName && newName !== c) updateCategory(c, newName);
+                      }}
+                      title="Edit"
+                    >
+                      <Edit2 size={14} />
+                    </button>
+                    <button 
+                      className={`${styles.configActionBtn} ${styles.configDelBtn}`}
+                      onClick={() => { if (confirm(`Delete Category "${c}"?`)) deleteCategory(c); }}
+                      title="Delete"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}

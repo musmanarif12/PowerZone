@@ -1,0 +1,80 @@
+.features {
+  padding: 4rem 0;
+  margin-top: -5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.card {
+  background-color: white;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: var(--transition);
+  border-bottom: 4px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-hover);
+  border-bottom-color: var(--whatsapp-green);
+}
+
+.iconWrapper {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(37, 211, 102, 0.1);
+  color: var(--whatsapp-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  transition: var(--transition);
+}
+
+.card:hover .iconWrapper {
+  background-color: var(--whatsapp-green);
+  color: white;
+  transform: rotateY(360deg);
+}
+
+.iconWrapper svg {
+  width: 32px;
+  height: 32px;
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.cardDesc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .features {
+    margin-top: 0;
+    padding: 6rem 0;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

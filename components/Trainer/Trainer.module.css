@@ -1,0 +1,156 @@
+.trainer {
+  padding: 8rem 0;
+  background-color: var(--primary-white);
+  overflow: hidden;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.header h4 {
+  color: var(--whatsapp-green);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-size: 0.9rem;
+}
+
+.header h2 {
+  font-size: 3rem;
+  margin: 1rem 0;
+}
+
+.accentLine {
+  width: 60px;
+  height: 4px;
+  background-color: var(--whatsapp-green);
+  margin-bottom: 2.5rem;
+}
+
+.trainerName {
+  font-size: 2.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.title {
+  color: var(--whatsapp-green);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 3rem;
+}
+
+.credItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.icon {
+  color: var(--whatsapp-green);
+  width: 24px;
+  height: 24px;
+}
+
+.bookBtn {
+  background-color: var(--whatsapp-green);
+  color: white;
+  padding: 1.1rem 2.8rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: var(--shadow-green);
+}
+
+.bookBtn:hover {
+  background-color: var(--whatsapp-medium);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.imageSide {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.imageWrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.bgDecoration {
+  position: absolute;
+  top: 10%;
+  right: -10%;
+  width: 100%;
+  height: 90%;
+  background-color: var(--whatsapp-green);
+  border-radius: 30px;
+  z-index: -1;
+  transform: rotate(5deg);
+}
+
+.trainerImage {
+  border-radius: 30px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 992px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 6rem;
+  }
+  
+  .contentSide {
+    order: 2;
+  }
+  
+  .imageSide {
+    order: 1;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .header, .bio {
+    text-align: center;
+  }
+  
+  .accentLine {
+    margin: 0 auto 2.5rem;
+  }
+  
+  .credItem {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .header h2 {
+    font-size: 2.2rem;
+  }
+  
+  .trainerName {
+    font-size: 1.8rem;
+  }
+}
