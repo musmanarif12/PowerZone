@@ -71,7 +71,7 @@ const Trainer = () => {
           <div className={styles.imageWrapper}>
             <div className={styles.bgDecoration}></div>
             <Image 
-              src="/head-trainer.png" 
+              src="/assets/powerzone gym trainer.png" 
               alt="M. Bilal - Head Trainer" 
               width={500} 
               height={600} 
