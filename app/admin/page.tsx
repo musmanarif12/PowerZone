@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Package, TrendingUp, AlertTriangle, LogOut, RefreshCw, Users, ShoppingBag, CheckCircle, Settings, Minus } from 'lucide-react';
-import { db, storage } from '@/lib/firebase';
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { useAdmin } from '@/lib/adminContext';
 import { Product } from '@/lib/products';
 import styles from './AdminPage.module.css';
@@ -22,6 +21,7 @@ const dataUrlToBlob = (dataUrl: string) => {
 };
 
 const EMPTY_FORM: Omit<Product, 'id'> = {
+// ... existing EMPTY_FORM ...
   name: '',
   brand: '',
   category: 'Whey Protein',
@@ -137,38 +137,24 @@ export default function AdminPage() {
     }
     
     setIsSubmitting(true);
-    setSuccess('🚀 Step 1/3: Preparing product data...');
+    setSuccess('🚀 Saving to Database...');
     try {
-      let imageUrl = form.image;
-      
-      // If image is a Base64 string from upload, push to Storage
-      if (imageUrl.startsWith('data:')) {
-        setSuccess('📤 Step 2/3: Uploading image to Cloud Storage...');
-        const blob = dataUrlToBlob(imageUrl);
-        const productSlug = form.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-        const storageRef = ref(storage, `products/${productSlug}-${Date.now()}.jpg`);
-        await uploadBytes(storageRef, blob, { contentType: 'image/jpeg' });
-        imageUrl = await getDownloadURL(storageRef);
-      }
-
-      setSuccess('💾 Step 3/3: Finalizing in Firestore Database...');
-      const finalProduct = { ...form, image: imageUrl, id: editId || `prod-${Date.now()}` };
+      const finalProduct = { ...form, id: editId || `prod-${Date.now()}` };
       
       if (editId) {
         await updateProduct(finalProduct);
-        setSuccess('✅ Success! Changes are now live.');
+        setSuccess('✅ Success! Changes are live.');
         setEditId(null);
       } else {
         await addProduct(finalProduct);
-        setSuccess('✅ Success! New product is now live.');
+        setSuccess('✅ Success! New product added.');
       }
       setForm(EMPTY_FORM);
       setFileKey(Date.now());
       setTimeout(() => setSuccess(''), 5000);
     } catch (err: any) {
-      console.error("FIREBASE ERROR:", err);
-      const msg = err?.message || 'Unknown error';
-      alert(`Critical Error during Save: ${msg}\n\nHint: Check your Firebase Storage and Firestore Rules in the console.`);
+      console.error("WRITE ERROR:", err);
+      alert('Error: Database write failed. This is usually due to Firestore usage limits or broken rules.');
     } finally {
       setIsSubmitting(false);
     }
@@ -183,20 +169,19 @@ export default function AdminPage() {
       const img = new window.Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 800;
-        const MAX_HEIGHT = 800;
+        const MAX_DIM = 480; 
         let width = img.width;
         let height = img.height;
 
         if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
+          if (width > MAX_DIM) {
+            height *= MAX_DIM / width;
+            width = MAX_DIM;
           }
         } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
+          if (height > MAX_DIM) {
+            width *= MAX_DIM / height;
+            height = MAX_DIM;
           }
         }
 
@@ -205,7 +190,7 @@ export default function AdminPage() {
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
         
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
         setForm(prev => ({ ...prev, image: dataUrl }));
       };
       img.src = ev.target?.result as string;
