@@ -137,11 +137,13 @@ export default function AdminPage() {
     }
     
     setIsSubmitting(true);
+    setSuccess('🚀 Step 1/3: Preparing product data...');
     try {
       let imageUrl = form.image;
       
       // If image is a Base64 string from upload, push to Storage
       if (imageUrl.startsWith('data:')) {
+        setSuccess('📤 Step 2/3: Uploading image to Cloud Storage...');
         const blob = dataUrlToBlob(imageUrl);
         const productSlug = form.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         const storageRef = ref(storage, `products/${productSlug}-${Date.now()}.jpg`);
@@ -149,22 +151,24 @@ export default function AdminPage() {
         imageUrl = await getDownloadURL(storageRef);
       }
 
+      setSuccess('💾 Step 3/3: Finalizing in Firestore Database...');
       const finalProduct = { ...form, image: imageUrl, id: editId || `prod-${Date.now()}` };
       
       if (editId) {
         await updateProduct(finalProduct);
-        setSuccess('Changes Live! Cloud link updated.');
+        setSuccess('✅ Success! Changes are now live.');
         setEditId(null);
       } else {
         await addProduct(finalProduct);
-        setSuccess('New Product Live! Image on Cloud.');
+        setSuccess('✅ Success! New product is now live.');
       }
       setForm(EMPTY_FORM);
       setFileKey(Date.now());
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      console.error(err);
-      alert('Error: Image upload failed. Please try a smaller image or check connection.');
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (err: any) {
+      console.error("FIREBASE ERROR:", err);
+      const msg = err?.message || 'Unknown error';
+      alert(`Critical Error during Save: ${msg}\n\nHint: Check your Firebase Storage and Firestore Rules in the console.`);
     } finally {
       setIsSubmitting(false);
     }
