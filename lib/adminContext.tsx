@@ -34,17 +34,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const unsubProducts = onSnapshot(productsColl, (snapshot) => {
       const dbProds = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Product));
       
-      // Start with defaults, then override with Firestore versions
-      const merged = [...defaultProducts];
-      dbProds.forEach(dbProduct => {
-        const index = merged.findIndex(p => p.id === dbProduct.id);
-        if (index > -1) {
-          merged[index] = dbProduct;
-        } else {
-          merged.push(dbProduct);
-        }
-      });
-      setProducts(merged);
+      // Efficiently merge defaults with Firestore products using a Map
+      const productMap = new Map<string, Product>();
+      
+      // Load defaults first
+      defaultProducts.forEach(p => productMap.set(p.id, p));
+      
+      // Override with Firestore versions
+      dbProds.forEach(dbProduct => productMap.set(dbProduct.id, dbProduct));
+      
+      setProducts(Array.from(productMap.values()));
     });
 
     // Sync Brands/Categories with Firestore
