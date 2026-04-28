@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Zap, Phone, Mail, MapPin } from 'lucide-react';
+import { Zap, Phone, MapPin } from 'lucide-react';
 import styles from './Footer.module.css';
 
 const Footer = () => {
@@ -46,15 +46,11 @@ const Footer = () => {
             <div className={styles.contactInfo}>
               <div className={styles.infoItem}>
                 <MapPin className={styles.infoIcon} />
-                <span>Maraghzar Colony Multan Road, Lahore</span>
+                <span>13-A , Maraghzar Colony ,Multan Road Lahore</span>
               </div>
               <div className={styles.infoItem}>
                 <Phone className={styles.infoIcon} />
                 <span>+92 3094045794</span>
-              </div>
-              <div className={styles.infoItem}>
-                <Mail className={styles.infoIcon} />
-                <span>info@powerzone.pk</span>
               </div>
             </div>
           </div>
