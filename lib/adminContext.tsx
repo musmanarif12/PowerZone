@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, defaultProducts, BRANDS, CATEGORIES } from './products';
 import { db } from './firebase';
-import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc, collection, deleteDoc } from 'firebase/firestore';
 
 interface AdminContextType {
   products: Product[];
@@ -29,43 +29,50 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const savedProds = localStorage.getItem('pz_products');
-      if (savedProds) {
-        setProducts(JSON.parse(savedProds));
+    // Sync Products with Firestore
+    const productsColl = collection(db, 'products');
+    const unsubProducts = onSnapshot(productsColl, (snapshot) => {
+      if (!snapshot.empty) {
+        const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Product));
+        setProducts(fetched);
       } else {
+        // Init with defaults if empty
         setProducts(defaultProducts);
-        localStorage.setItem('pz_products', JSON.stringify(defaultProducts));
+        // We don't auto-push all defaults to Firestore to avoid clutter, 
+        // but individual ones can be saved if edited.
       }
-    } catch {
-      setProducts(defaultProducts);
-    }
+    });
 
     // Sync Brands/Categories with Firestore
     const configDoc = doc(db, 'settings', 'siteConfig');
-    const unsubscribe = onSnapshot(configDoc, (snapshot) => {
+    const unsubConfig = onSnapshot(configDoc, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data();
         if (data.brands) setBrands(data.brands);
         if (data.categories) setCategories(data.categories);
       } else {
-        // Init Firestore with defaults if missing
         setDoc(configDoc, { brands: BRANDS, categories: CATEGORIES });
       }
     });
 
     setIsLoaded(true);
-    return () => unsubscribe();
+    return () => {
+      unsubProducts();
+      unsubConfig();
+    };
   }, []);
 
-  const save = (updated: Product[]) => {
-    setProducts(updated);
-    localStorage.setItem('pz_products', JSON.stringify(updated));
+  const addProduct = async (p: Product) => {
+    await setDoc(doc(db, 'products', p.id), p);
   };
 
-  const addProduct = (p: Product) => save([...products, p]);
-  const updateProduct = (p: Product) => save(products.map(x => x.id === p.id ? p : x));
-  const deleteProduct = (id: string) => save(products.filter(x => x.id !== id));
+  const updateProduct = async (p: Product) => {
+    await setDoc(doc(db, 'products', p.id), p);
+  };
+
+  const deleteProduct = async (id: string) => {
+    await deleteDoc(doc(db, 'products', id));
+  };
   
   const addBrand = async (name: string) => {
     const updated = [...brands, name];

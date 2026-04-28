@@ -1,22 +1,39 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { defaultProducts } from '@/lib/products';
+import { defaultProducts, Product } from '@/lib/products';
 import ProductDetailClient from '@/components/ProductDetail/ProductDetailClient';
 import { notFound } from 'next/navigation';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface Props {
   params: { id: string };
 }
 
+async function getProduct(id: string): Promise<Product | null> {
+  try {
+    const docRef = doc(db, 'products', id);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      return { id: snap.id, ...snap.data() } as Product;
+    }
+  } catch (e) {
+    console.error("Error fetching product from Firestore:", e);
+  }
+  // Fallback to static data
+  return defaultProducts.find((p) => p.id === id) || null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const product = defaultProducts.find((p) => p.id === id);
+  const product = await getProduct(id);
 
   if (!product) {
     return {
       title: 'Product Not Found | PowerZone',
     };
   }
+// ... rest of metadata ...
 
   return {
     title: `${product.name} | PowerZone Pakistan`,
@@ -37,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const product = defaultProducts.find((p) => p.id === id);
+  const product = await getProduct(id);
 
   if (!product) {
     notFound();

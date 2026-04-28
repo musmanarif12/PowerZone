@@ -114,23 +114,34 @@ export default function AdminPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.image.trim() || form.price <= 0) {
       alert('Please fill in product name, image URL, and price.');
       return;
     }
-    if (editId) {
-      updateProduct({ ...form, id: editId });
-      setSuccess('Product updated successfully!');
-      setEditId(null);
-    } else {
-      addProduct({ ...form, id: `prod-${Date.now()}` });
-      setSuccess('Product added successfully!');
+    
+    setIsSubmitting(true);
+    try {
+      if (editId) {
+        await updateProduct({ ...form, id: editId });
+        setSuccess('Product updated successfully in Database!');
+        setEditId(null);
+      } else {
+        await addProduct({ ...form, id: `prod-${Date.now()}` });
+        setSuccess('Product added successfully to Database!');
+      }
+      setForm(EMPTY_FORM);
+      setFileKey(Date.now());
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error(err);
+      alert('Error updating database. Please check your connection.');
+    } finally {
+      setIsSubmitting(false);
     }
-    setForm(EMPTY_FORM);
-    setFileKey(Date.now());
-    setTimeout(() => setSuccess(''), 3000);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
