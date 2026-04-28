@@ -151,9 +151,16 @@
   }
   
   .imageContainer {
-    display: none; /* Hide hero image and 10+ badge on mobile as requested */
+    display: block;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    order: 1;
   }
   
+  .imageBadge {
+    display: none; /* Hide badge only on mobile as requested */
+  }
+
   .description {
     margin-left: auto;
     margin-right: auto;
