@@ -19,8 +19,8 @@ const About = () => {
         >
           <div className={styles.imageWrapper}>
             <Image 
-              src="/assets/img2.jpg" 
-              alt="PowerZone gym interior" 
+              src="/assets/powerzone gym trainer.png" 
+              alt="PowerZone gym trainer" 
               width={600} 
               height={450} 
               className={styles.aboutImage}
@@ -68,7 +68,7 @@ const About = () => {
           </div>
           
           <Link 
-            href="https://wa.me/923094045794" 
+            href="https://wa.me/923044603006" 
             className={styles.learnMore}
             target="_blank"
             rel="noopener noreferrer"

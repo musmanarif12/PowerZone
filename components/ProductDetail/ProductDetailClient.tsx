@@ -102,7 +102,7 @@ export default function ProductDetailClient({ initialProduct, id }: Props) {
                 Buy Now!
               </button>
               <a
-                href={`https://wa.me/923094045794?text=${waMsg}`}
+                href={`https://wa.me/923044603006?text=${waMsg}`}
                 className={styles.waBtn}
                 target="_blank"
                 rel="noopener noreferrer"

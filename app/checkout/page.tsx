@@ -70,7 +70,7 @@ export default function CheckoutPage() {
 
     alert("Order recorded. Redirecting to WhatsApp to send receipt and payment proof.");
     clearCart();
-    window.open(`https://wa.me/923094045794?text=${msg}`, '_blank');
+    window.open(`https://wa.me/923044603006?text=${msg}`, '_blank');
     router.push('/');
   };
 
@@ -193,7 +193,7 @@ export default function CheckoutPage() {
               </label>
 
               <div className={styles.bankDetails}>
-                <p>Make your payment directly into our bank account. Please share screenshot of transaction slip with your order ID at whatsapp <strong>03094045794</strong> or email at <strong>info@powerzone.pk</strong>. Your order will not be dispatched until the amount has cleared in our bank account.</p>
+                <p>Make your payment directly into our bank account. Please share screenshot of transaction slip with your order ID at whatsapp <strong>+92 304-4603006</strong> or email at <strong>info@powerzone.pk</strong>. Your order will not be dispatched until the amount has cleared in our bank account.</p>
                 
                 <div className={styles.bankAccountInfo}>
                   <p><strong>Title:</strong> PowerZone Gym & Supplements</p>

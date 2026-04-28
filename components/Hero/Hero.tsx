@@ -46,7 +46,7 @@ const Hero = () => {
             className={styles.ctaGroup}
           >
             <Link 
-              href="https://wa.me/923094045794" 
+              href="https://wa.me/923044603006" 
               className={styles.primaryBtn}
               target="_blank"
               rel="noopener noreferrer"

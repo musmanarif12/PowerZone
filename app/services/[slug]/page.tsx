@@ -86,7 +86,7 @@ const ServiceDetailPage = () => {
             </div>
             
             <Link 
-              href="https://wa.me/923094045794" 
+              href="https://wa.me/923044603006" 
               className={styles.joinBtn}
               target="_blank"
               rel="noopener noreferrer"

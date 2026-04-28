@@ -45,7 +45,7 @@ const Pricing = () => {
               </ul>
               
               <Link 
-                href="https://wa.me/923094045794" 
+                href="https://wa.me/923044603006" 
                 className={styles.ctaBtn}
                 target="_blank"
                 rel="noopener noreferrer"

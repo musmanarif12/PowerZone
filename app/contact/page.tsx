@@ -11,7 +11,7 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const msg = encodeURIComponent(`Name: ${form.name}\nPhone: ${form.phone}\nEmail: ${form.email}\nMessage: ${form.message}`);
-    window.open(`https://wa.me/923094045794?text=${msg}`, '_blank');
+    window.open(`https://wa.me/923044603006?text=${msg}`, '_blank');
     setSent(true);
     setTimeout(() => setSent(false), 4000);
   };
@@ -51,7 +51,7 @@ export default function ContactPage() {
               </div>
             </div>
             <a
-              href="https://wa.me/923094045794"
+              href="https://wa.me/923044603006"
               className={styles.waBtn}
               target="_blank"
               rel="noopener noreferrer"

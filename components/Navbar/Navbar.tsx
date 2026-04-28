@@ -80,7 +80,7 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <Link href="https://wa.me/923094045794" className={styles.ctaButton} target="_blank" rel="noopener noreferrer">
+              <Link href="https://wa.me/923044603006" className={styles.ctaButton} target="_blank" rel="noopener noreferrer">
                 Join Now
               </Link>
             )}

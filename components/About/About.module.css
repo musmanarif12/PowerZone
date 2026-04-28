@@ -17,6 +17,8 @@
 .imageWrapper {
   position: relative;
   z-index: 1;
+  overflow: hidden; /* Added for cropping bottom logo */
+  border-radius: 20px;
 }
 
 .aboutImage {
@@ -24,6 +26,8 @@
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: auto;
+  margin-bottom: -5%; /* Crop bottom 5% where Gemini logo usually is */
+  object-fit: cover;
 }
 
 .experienceBox {
@@ -125,12 +129,12 @@
     grid-template-columns: 1fr;
     gap: 4rem;
   }
-  
+
   .imageSide {
     max-width: 600px;
     margin: 0 auto;
   }
-  
+
   .experienceBox {
     right: 0;
   }
