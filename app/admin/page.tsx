@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Package, TrendingUp, AlertTriangle, LogOut, RefreshCw, Users, ShoppingBag, CheckCircle, Settings, Minus } from 'lucide-react';
-import { db } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { useAdmin } from '@/lib/adminContext';
 import { Product } from '@/lib/products';
 import styles from './AdminPage.module.css';
@@ -125,20 +126,32 @@ export default function AdminPage() {
     
     setIsSubmitting(true);
     try {
+      let imageUrl = form.image;
+      
+      // If image is a Base64 string from upload, push to Storage
+      if (imageUrl.startsWith('data:')) {
+        const productSlug = form.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        const storageRef = ref(storage, `products/${productSlug}-${Date.now()}.jpg`);
+        await uploadString(storageRef, imageUrl, 'data_url');
+        imageUrl = await getDownloadURL(storageRef);
+      }
+
+      const finalProduct = { ...form, image: imageUrl, id: editId || `prod-${Date.now()}` };
+      
       if (editId) {
-        await updateProduct({ ...form, id: editId });
-        setSuccess('Product updated successfully in Database!');
+        await updateProduct(finalProduct);
+        setSuccess('Product updated with Cloud Image!');
         setEditId(null);
       } else {
-        await addProduct({ ...form, id: `prod-${Date.now()}` });
-        setSuccess('Product added successfully to Database!');
+        await addProduct(finalProduct);
+        setSuccess('Product added with Cloud Image!');
       }
       setForm(EMPTY_FORM);
       setFileKey(Date.now());
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error(err);
-      alert('Error updating database. Please check your connection.');
+      alert('Error: Image upload failed. Please try a smaller image or check connection.');
     } finally {
       setIsSubmitting(false);
     }

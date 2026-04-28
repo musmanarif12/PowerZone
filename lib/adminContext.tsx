@@ -29,18 +29,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Sync Products with Firestore
+    // Sync Products with Firestore (Merge with defaults)
     const productsColl = collection(db, 'products');
     const unsubProducts = onSnapshot(productsColl, (snapshot) => {
-      if (!snapshot.empty) {
-        const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Product));
-        setProducts(fetched);
-      } else {
-        // Init with defaults if empty
-        setProducts(defaultProducts);
-        // We don't auto-push all defaults to Firestore to avoid clutter, 
-        // but individual ones can be saved if edited.
-      }
+      const dbProds = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Product));
+      
+      // Start with defaults, then override with Firestore versions
+      const merged = [...defaultProducts];
+      dbProds.forEach(dbProduct => {
+        const index = merged.findIndex(p => p.id === dbProduct.id);
+        if (index > -1) {
+          merged[index] = dbProduct;
+        } else {
+          merged.push(dbProduct);
+        }
+      });
+      setProducts(merged);
     });
 
     // Sync Brands/Categories with Firestore
