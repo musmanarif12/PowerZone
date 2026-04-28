@@ -1,6 +1,7 @@
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,18 +12,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-import { initializeFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+// Initialize App
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-const app = initializeApp(firebaseConfig);
-
-// ✅ Auth export
+// Auth
 export const auth = getAuth(app);
-// ✅ Firestore export with stability fix for connection errors
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-});
-// ✅ Storage export
+
+// Firestore (with stability settings)
+export const db = getApps().length > 0 
+  ? getFirestore(app) 
+  : initializeFirestore(app, {
+      experimentalForceLongPolling: true,
+    });
+
+// Storage
 export const storage = getStorage(app);
 
 export default app;

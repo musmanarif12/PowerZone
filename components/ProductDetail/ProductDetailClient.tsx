@@ -9,16 +9,33 @@ import styles from '@/app/product/[id]/ProductDetail.module.css';
 import { Product } from '@/lib/products';
 
 interface Props {
-  product: Product;
+  initialProduct: Product | null;
+  id: string;
 }
 
-export default function ProductDetailClient({ product: initialProduct }: Props) {
+export default function ProductDetailClient({ initialProduct, id }: Props) {
   const { buyNow } = useCart();
   const { products } = useAdmin();
   const router = useRouter();
 
-  // Always prefer the live product from AdminContext (Firestore real-time sync)
-  const product = products.find(p => p.id === initialProduct.id) || initialProduct;
+  // Prefer the live product from AdminContext (Firestore real-time sync)
+  const product = products.find(p => p.id === id) || initialProduct;
+
+  if (!product) {
+    return (
+      <div className={styles.page}>
+        <div className={`${styles.inner} container`} style={{ textAlign: 'center', padding: '6rem 2rem' }}>
+          <div className={styles.loader}></div>
+          <p style={{ marginTop: '2rem', color: '#666', fontSize: '1.2rem' }}>
+            Syncing product details with PowerZone...
+          </p>
+          <button className={styles.back} onClick={() => router.push('/shop')} style={{ margin: '2rem auto' }}>
+            <ArrowLeft size={16} /> Back to Shop
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const savings = product.originalPrice - product.price;
   const pct = Math.round((savings / product.originalPrice) * 100);

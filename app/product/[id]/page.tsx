@@ -57,7 +57,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!product) {
     return {
-      title: "Product Not Found | PowerZone",
+      title: "PowerZone Pakistan | Premium Gym Supplements",
+      description: "Buy authentic whey protein, pre-workouts, and vitamins at PowerZone. Best prices in Pakistan with express home delivery.",
     };
   }
   // ... rest of metadata ...
@@ -83,44 +84,44 @@ export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const product = await getProduct(id);
 
-  if (!product) {
-    notFound();
-  }
-
-  // JSON-LD Structured Data
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    image: product.image,
-    description: product.description,
-    brand: {
-      "@type": "Brand",
-      name: product.brand,
-    },
-    offers: {
-      "@type": "Offer",
-      price: product.price,
-      priceCurrency: "PKR",
-      availability: product.inStock
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      url: `https://powerzone.pk/product/${product.id}`,
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: product.reviews,
-    },
-  };
+  // JSON-LD Structured Data (Only if product exists on server)
+  const jsonLd = product
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.name,
+        image: product.image,
+        description: product.description,
+        brand: {
+          "@type": "Brand",
+          name: product.brand,
+        },
+        offers: {
+          "@type": "Offer",
+          price: product.price,
+          priceCurrency: "PKR",
+          availability: product.inStock
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          url: `https://powerzone.pk/product/${product.id}`,
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: product.rating,
+          reviewCount: product.reviews,
+        },
+      }
+    : null;
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <ProductDetailClient product={product} />
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <ProductDetailClient initialProduct={product} id={id} />
     </>
   );
 }
