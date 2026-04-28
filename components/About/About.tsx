@@ -19,8 +19,8 @@ const About = () => {
         >
           <div className={styles.imageWrapper}>
             <Image 
-              src="/assets/powerzone gym trainer.png" 
-              alt="PowerZone gym trainer" 
+              src="/assets/img2.jpg" 
+              alt="PowerZone gym interior" 
               width={600} 
               height={450} 
               className={styles.aboutImage}
