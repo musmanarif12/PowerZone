@@ -10,9 +10,7 @@
   color: #fff;
   padding: 0.9rem 1.5rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column; /* Stack vertically on mobile */
   gap: 1rem;
   border-bottom: 3px solid var(--primary-green);
   position: sticky;
@@ -20,10 +18,27 @@
   z-index: 100;
 }
 
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .headerLeft {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.menuToggle {
+  display: none; /* Desktop hidden */
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .logo {
@@ -44,6 +59,34 @@
   align-items: center;
   gap: 0.7rem;
   flex-wrap: wrap;
+  width: 100%; /* Take full width for centered tabs */
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .menuToggle {
+    display: flex;
+  }
+
+  .headerRight {
+    flex-direction: column;
+    align-items: stretch;
+    background: #1a1a1a;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+    display: flex; /* Always flex but controlled by collapse */
+  }
+
+  .menuCollapsed {
+    display: none;
+  }
+
+  .tabBtn {
+    width: 100%;
+    text-align: left;
+    padding: 0.8rem 1.2rem;
+  }
 }
 
 .tabBtn {
@@ -796,6 +839,31 @@
   padding: 2rem;
 }
 
+@media (max-width: 768px) {
+  .configTab { 
+    grid-template-columns: 1fr; 
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .configCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .configInputRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .configInputRow button {
+    width: 100%;
+  }
+
+  .configItem {
+    padding: 0.7rem 1rem;
+  }
+}
+
 .configCard {
   background: #fff;
   padding: 2rem;
@@ -818,7 +886,7 @@
 .configInputRow {
   display: flex;
   gap: 0.8rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .configInput {
@@ -862,6 +930,7 @@
 .configItemLabel {
   font-weight: 700;
   color: var(--text-dark);
+  font-size: 0.9rem;
 }
 
 .configItemActions {
@@ -887,6 +956,3 @@
 .configDelBtn { color: #e53935; }
 .configDelBtn:hover { background: rgba(229,57,53,0.1); }
 
-@media (max-width: 1024px) {
-  .configTab { grid-template-columns: 1fr; }
-}

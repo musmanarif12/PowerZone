@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Package, TrendingUp, AlertTriangle, LogOut, RefreshCw, Users, ShoppingBag, CheckCircle, Settings } from 'lucide-react';
+import { Plus, Trash2, Edit2, Package, TrendingUp, AlertTriangle, LogOut, RefreshCw, Users, ShoppingBag, CheckCircle, Settings, Minus } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useAdmin } from '@/lib/adminContext';
@@ -37,6 +37,7 @@ export default function AdminPage() {
   const [success, setSuccess] = useState('');
   const [expandedCat, setExpandedCat] = useState<string | null>(null);
   const [fileKey, setFileKey] = useState(Date.now());
+  const [isMenuCollapsed, setIsMenuCollapsed] = useState(true); // Default collapsed on mobile
 
   // AUTH STATE
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -195,23 +196,32 @@ export default function AdminPage() {
 
   return (
     <div className={styles.page}>
-      {/* Header */}
       <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <span className={styles.logo}>⚡ PowerZone</span>
-          <span className={styles.adminLabel}>Store Administrator Dashboard</span>
+        <div className={styles.headerTop}>
+          <div className={styles.headerLeft}>
+            <span className={styles.logo}>⚡ PowerZone</span>
+            <span className={styles.adminLabel}>Store Administrator Dashboard</span>
+          </div>
+          <button 
+            className={styles.menuToggle} 
+            onClick={() => setIsMenuCollapsed(!isMenuCollapsed)}
+            aria-label="Toggle Navigation"
+          >
+            {isMenuCollapsed ? <Plus size={20} /> : <Minus size={20} />}
+          </button>
         </div>
-        <div className={styles.headerRight}>
-          <button className={`${styles.tabBtn} ${tab === 'cms' ? styles.tabActive : ''}`} onClick={() => setTab('cms')}>
+
+        <div className={`${styles.headerRight} ${isMenuCollapsed ? styles.menuCollapsed : ''}`}>
+          <button className={`${styles.tabBtn} ${tab === 'cms' ? styles.tabActive : ''}`} onClick={() => { setTab('cms'); setIsMenuCollapsed(true); }}>
             Website Products (CMS)
           </button>
-          <button className={`${styles.tabBtn} ${tab === 'orders' ? styles.tabActive : ''}`} onClick={() => setTab('orders')}>
+          <button className={`${styles.tabBtn} ${tab === 'orders' ? styles.tabActive : ''}`} onClick={() => { setTab('orders'); setIsMenuCollapsed(true); }}>
             <ShoppingBag size={14} style={{display:'inline', marginBottom:'-2px'}} /> Database Orders
           </button>
-          <button className={`${styles.tabBtn} ${tab === 'users' ? styles.tabActive : ''}`} onClick={() => setTab('users')}>
+          <button className={`${styles.tabBtn} ${tab === 'users' ? styles.tabActive : ''}`} onClick={() => { setTab('users'); setIsMenuCollapsed(true); }}>
             <Users size={14} style={{display:'inline', marginBottom:'-2px'}} /> Registered Customers
           </button>
-          <button className={`${styles.tabBtn} ${tab === 'config' ? styles.tabActive : ''}`} onClick={() => setTab('config')}>
+          <button className={`${styles.tabBtn} ${tab === 'config' ? styles.tabActive : ''}`} onClick={() => { setTab('config'); setIsMenuCollapsed(true); }}>
             <Settings size={14} style={{display:'inline', marginBottom:'-2px'}} /> Site Config
           </button>
           
