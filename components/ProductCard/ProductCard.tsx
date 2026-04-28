@@ -28,12 +28,13 @@ export default function ProductCard({ product }: Props) {
       {!product.inStock && (
         <span className={styles.outOfStock}>OUT OF STOCK</span>
       )}
-      <Link href={`/product/${product.id}`} className={styles.imageWrap}>
+      <Link href={`/product/${product.id}`} className={styles.imageWrap} prefetch={true}>
         <img
           src={product.image}
           alt={product.name}
           className={styles.image}
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
         />
       </Link>
       <div className={styles.info}>

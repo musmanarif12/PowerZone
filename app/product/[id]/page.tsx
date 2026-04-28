@@ -10,6 +10,14 @@ interface Props {
   params: { id: string };
 }
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export async function generateStaticParams() {
+  return defaultProducts.map((p) => ({
+    id: p.id,
+  }));
+}
+
 async function getProduct(id: string): Promise<Product | null> {
   try {
     const docRef = doc(db, 'products', id);
