@@ -69,7 +69,14 @@ export default function AdminPage() {
            const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
            return timeB - timeA;
         }));
-        setDbUsers(uSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()));
+        setDbUsers(uSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a: any, b: any) => {
+          const getTime = (val: any) => {
+            if (!val) return 0;
+            if (val.toMillis) return val.toMillis();
+            return new Date(val).getTime() || 0;
+          };
+          return getTime(b.createdAt) - getTime(a.createdAt);
+        }));
       } catch (e) {
         console.error("Error fetching db", e);
       }
@@ -464,6 +471,46 @@ export default function AdminPage() {
                     </button>
                   )}
                   <button onClick={() => handleDeleteOrder(o.id)} title="Delete Order" style={{background: 'rgba(255,0,0,0.1)', color: 'red', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex'}}>
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Users Tab */}
+      {tab === 'users' && (
+        <div className={styles.erpTab}>
+          <div className={styles.erpCards}>
+            <div className={styles.erpCard}>
+              <Users size={35} className={styles.erpIcon} />
+              <div>
+                <div className={styles.erpNum}>{dbUsers.length}</div>
+                <div className={styles.erpLabel}>Registered Accounts</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className={styles.erpTable}>
+            <div className={styles.tableHeader} style={{gridTemplateColumns:'1.5fr 2fr 1.5fr 1fr 0.5fr'}}>
+              <div>Name</div>
+              <div>Email</div>
+              <div>Phone</div>
+              <div>Joined</div>
+              <div>Actions</div>
+            </div>
+            {dbUsers.map(u => (
+              <div key={u.id} className={styles.tableRow} style={{gridTemplateColumns:'1.5fr 2fr 1.5fr 1fr 0.5fr'}}>
+                <div style={{fontWeight:800}}>{u.name}</div>
+                <div style={{color:'#444'}}>{u.email}</div>
+                <div style={{fontWeight:600}}>{u.phone || 'N/A'}</div>
+                <div style={{color:'#666', fontSize:'0.75rem', fontWeight:600}}>
+                  {u.createdAt ? (typeof u.createdAt === 'string' ? new Date(u.createdAt).toLocaleDateString() : new Date(u.createdAt.toMillis()).toLocaleDateString()) : 'N/A'}
+                </div>
+                <div style={{display:'flex', gap:'0.5rem', alignItems:'center'}}>
+                  <button onClick={() => handleDeleteUser(u.id)} title="Delete User" style={{background: 'rgba(255,0,0,0.1)', color: 'red', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex'}}>
                     <Trash2 size={15} />
                   </button>
                 </div>
