@@ -21,24 +21,47 @@
   align-items: center;
 }
 
+.logoWrapper {
+  background: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05); /* Soft border for definition */
+}
+
+.logoWrapper:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.logoImg {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 992px) {
+  .logoImg {
+    width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoWrapper {
+    padding: 0.3rem 0.6rem;
+  }
+  .logoImg {
+    width: 100px;
+  }
+}
+
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text-dark);
-  font-family: 'Poppins', sans-serif;
-}
-
-.logo span span {
-  color: var(--whatsapp-green);
-}
-
-.logoIcon {
-  width: 28px;
-  height: 28px;
-  color: var(--whatsapp-green);
 }
 
 .navLinks {

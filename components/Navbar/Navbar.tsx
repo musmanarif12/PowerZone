@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 import { Zap, Menu, X, User, ChevronDown, Package, LogOut } from "lucide-react";
 import { useAuth } from '@/lib/authContext';
 import AuthModal from '@/components/Auth/AuthModal';
@@ -39,10 +40,16 @@ const Navbar = () => {
       <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
         <div className={`${styles.container} container`}>
           <Link href="/" className={styles.logo}>
-            <Zap className={styles.logoIcon} fill="#00C853" />
-            <span>
-              Power<span>Zone</span>
-            </span>
+            <div className={styles.logoWrapper}>
+              <Image 
+                src="/assets/logo.png" 
+                alt="PowerZone Pakistan" 
+                width={150} 
+                height={50} 
+                className={styles.logoImg}
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Links */}
