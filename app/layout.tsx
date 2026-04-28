@@ -5,6 +5,13 @@ import { AuthProvider } from "@/lib/authContext";
 import ConditionalLayout from "@/components/ConditionalLayout/ConditionalLayout";
 import "./globals.css";
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: {
     default: "PowerZone | Pakistan's #1 Supplements Store",
