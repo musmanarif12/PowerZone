@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Star, MessageCircle } from 'lucide-react';
 import { useCart } from '@/lib/cartContext';
+import { useAdmin } from '@/lib/adminContext';
 import styles from '@/app/product/[id]/ProductDetail.module.css';
 import { Product } from '@/lib/products';
 
@@ -11,9 +12,13 @@ interface Props {
   product: Product;
 }
 
-export default function ProductDetailClient({ product }: Props) {
+export default function ProductDetailClient({ product: initialProduct }: Props) {
   const { buyNow } = useCart();
+  const { products } = useAdmin();
   const router = useRouter();
+
+  // Always prefer the live product from AdminContext (Firestore real-time sync)
+  const product = products.find(p => p.id === initialProduct.id) || initialProduct;
 
   const savings = product.originalPrice - product.price;
   const pct = Math.round((savings / product.originalPrice) * 100);
