@@ -272,7 +272,14 @@
   }
 
   .authButtons {
-    display: none;
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .signInBtn,
+  .signUpBtn {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
   }
 
   .hamburger {
@@ -321,5 +328,15 @@
   .logoIcon {
     width: 22px;
     height: 22px;
+  }
+
+  .signInBtn,
+  .signUpBtn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.72rem;
+  }
+
+  .authButtons {
+    gap: 0.3rem;
   }
 }
