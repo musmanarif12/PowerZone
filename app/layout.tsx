@@ -27,14 +27,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://www.powerzonefitnesclub.online'),
+  metadataBase: new URL('https://www.powerzonefitnessclub.online'),
   alternates: {
-    canonical: 'https://www.powerzonefitnesclub.online/',
+    canonical: 'https://www.powerzonefitnessclub.online/',
   },
   openGraph: {
     title: "PowerZone | Authentic Supplements in Pakistan",
     description: "Premium gym & supplements store. Authentic products delivered all over Pakistan.",
-    url: 'https://www.powerzonefitnesclub.online',
+    url: 'https://www.powerzonefitnessclub.online',
     siteName: 'PowerZone',
     images: [
       {
@@ -79,8 +79,8 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'PowerZone Pakistan',
-    url: 'https://www.powerzonefitnesclub.online',
-    logo: 'https://www.powerzonefitnesclub.online/logo.png',
+    url: 'https://www.powerzonefitnessclub.online',
+    logo: 'https://www.powerzonefitnessclub.online/logo.png',
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+92-309-4045794',
@@ -97,12 +97,12 @@ export default function RootLayout({
   const searchBoxLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    url: 'https://www.powerzonefitnesclub.online',
+    url: 'https://www.powerzonefitnessclub.online',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://www.powerzonefitnesclub.online/shop?q={search_term_string}',
+        urlTemplate: 'https://www.powerzonefitnessclub.online/shop?q={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
