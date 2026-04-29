@@ -63,6 +63,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: "CIgk-0d7YexPZLaDf6QPc_aXHS_s1Ko6t6gRrQEfVrc",
+  },
 };
 
 import WhatsAppButton from "@/components/WhatsApp/WhatsAppButton";
