@@ -13,8 +13,14 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const openAuth = (tab: 'login' | 'signup') => {
+    setAuthTab(tab);
+    setShowAuth(true);
+  };
   const { user, isLoaded, logOut } = useAuth();
   const router = useRouter();
 
@@ -80,9 +86,20 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <Link href="https://wa.me/923044603006" className={styles.ctaButton} target="_blank" rel="noopener noreferrer">
-                Join Now
-              </Link>
+              <div className={styles.authButtons}>
+                <button
+                  className={styles.signInBtn}
+                  onClick={() => openAuth('login')}
+                >
+                  Sign In
+                </button>
+                <button
+                  className={styles.signUpBtn}
+                  onClick={() => openAuth('signup')}
+                >
+                  Sign Up
+                </button>
+              </div>
             )}
 
             <button
@@ -95,7 +112,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+      {showAuth && <AuthModal onClose={() => setShowAuth(false)} initialTab={authTab} />}
       {showOrderHistory && <OrderHistoryModal onClose={() => setShowOrderHistory(false)} />}
     </>
   );
