@@ -170,7 +170,10 @@ export default function CheckoutPage() {
               </div>
               <div className={styles.summaryRow}>
                 <span>Shipment</span>
-                <span>Flat Delivery Charges: <span className={styles.priceVal}>Rs {shipment.toLocaleString()}</span></span>
+                <div className={styles.summaryRightText}>
+                  <span className={styles.shipmentLabel}>Flat Delivery Charges:</span>
+                  <span className={styles.priceVal}>Rs {shipment.toLocaleString()}</span>
+                </div>
               </div>
               <div className={`${styles.summaryRow} ${styles.totalRow}`}>
                 <span>Total</span>

@@ -276,6 +276,16 @@
     gap: 0.4rem;
   }
 
+  .hideMobile {
+    display: none;
+  }
+
+  .userBadge,
+  .ordersBtn,
+  .navLogoutBtn {
+    padding: 0.5rem;
+  }
+
   .signInBtn,
   .signUpBtn {
     padding: 0.4rem 0.85rem;

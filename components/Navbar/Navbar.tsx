@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { Zap, Menu, X, User, ChevronDown, Package, LogOut } from "lucide-react";
-import { useAuth } from '@/lib/authContext';
-import AuthModal from '@/components/Auth/AuthModal';
-import OrderHistoryModal from '@/components/Auth/OrderHistoryModal';
+import { useAuth } from "@/lib/authContext";
+import AuthModal from "@/components/Auth/AuthModal";
+import OrderHistoryModal from "@/components/Auth/OrderHistoryModal";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
+  const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const openAuth = (tab: 'login' | 'signup') => {
+  const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
     setShowAuth(true);
   };
@@ -26,8 +26,8 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     await logOut();
-    if (window.location.pathname === '/checkout') {
-      router.push('/');
+    if (window.location.pathname === "/checkout") {
+      router.push("/");
     }
   };
 
@@ -42,7 +42,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
+      <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
         <div className={`${styles.container} container`}>
           <Link href="/" className={styles.logo}>
             <Zap className={styles.logoIcon} fill="#00C853" />
@@ -52,14 +52,36 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Links */}
-          <ul className={`${styles.navLinks} ${isOpen ? styles.active : ''}`}>
-            <li><Link href="/#home" onClick={() => setIsOpen(false)}>Home</Link></li>
-            <li><Link href="/#about" onClick={() => setIsOpen(false)}>About</Link></li>
-            <li><Link href="/#services" onClick={() => setIsOpen(false)}>Services</Link></li>
-            <li><Link href="/#plans" onClick={() => setIsOpen(false)}>Plans</Link></li>
-            <li><Link href="/#contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
+          <ul className={`${styles.navLinks} ${isOpen ? styles.active : ""}`}>
             <li>
-              <Link href="/shop" onClick={() => setIsOpen(false)}>Shop</Link>
+              <Link href="/#home" onClick={() => setIsOpen(false)}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/#about" onClick={() => setIsOpen(false)}>
+                About
+              </Link>
+            </li>
+            <li>
+              <Link href="/#services" onClick={() => setIsOpen(false)}>
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link href="/#plans" onClick={() => setIsOpen(false)}>
+                Plans
+              </Link>
+            </li>
+            <li>
+              <Link href="/#contact" onClick={() => setIsOpen(false)}>
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link href="/shop" onClick={() => setIsOpen(false)}>
+                Shop
+              </Link>
             </li>
           </ul>
 
@@ -68,21 +90,20 @@ const Navbar = () => {
               <div className={styles.userControls}>
                 <div className={styles.userBadge}>
                   <User size={18} />
-                  <span>{user.name.split(' ')[0]}</span>
+                  <span className={styles.hideMobile}>
+                    {user.name.split(" ")[0]}
+                  </span>
                 </div>
-                <button 
-                  className={styles.ordersBtn} 
+                <button
+                  className={styles.ordersBtn}
                   onClick={() => setShowOrderHistory(true)}
                 >
                   <Package size={16} />
-                  Orders
+                  <span className={styles.hideMobile}>Orders</span>
                 </button>
-                <button 
-                  className={styles.navLogoutBtn} 
-                  onClick={handleLogout}
-                >
+                <button className={styles.navLogoutBtn} onClick={handleLogout}>
                   <LogOut size={16} />
-                  Log Out
+                  <span className={styles.hideMobile}>Log Out</span>
                 </button>
               </div>
             ) : (
@@ -108,8 +129,12 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      {showAuth && <AuthModal onClose={() => setShowAuth(false)} initialTab={authTab} />}
-      {showOrderHistory && <OrderHistoryModal onClose={() => setShowOrderHistory(false)} />}
+      {showAuth && (
+        <AuthModal onClose={() => setShowAuth(false)} initialTab={authTab} />
+      )}
+      {showOrderHistory && (
+        <OrderHistoryModal onClose={() => setShowOrderHistory(false)} />
+      )}
     </>
   );
 };
