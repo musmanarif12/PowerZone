@@ -87,18 +87,14 @@ const Navbar = () => {
               </div>
             ) : (
               <div className={styles.authButtons}>
-                <button
-                  className={styles.signInBtn}
-                  onClick={() => openAuth('login')}
-                >
-                  Sign In
-                </button>
-                <button
+                <Link
+                  href="https://wa.me/923044603006"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={styles.signUpBtn}
-                  onClick={() => openAuth('signup')}
                 >
-                  Sign Up
-                </button>
+                  Join Now
+                </Link>
               </div>
             )}
 
