@@ -46,7 +46,7 @@ const Footer = () => {
             <div className={styles.contactInfo}>
               <div className={styles.infoItem}>
                 <MapPin className={styles.infoIcon} />
-                <span>13-A , Maraghzar Colony ,Multan Road Lahore</span>
+                <span>13-A Maraghzar Colony, Multan Road, Lahore</span>
               </div>
               <div className={styles.infoItem}>
                 <Phone className={styles.infoIcon} />

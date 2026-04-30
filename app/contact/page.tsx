@@ -36,17 +36,10 @@ export default function ContactPage() {
                 </div>
               </div>
               <div className={styles.infoItem}>
-                <div className={styles.iconWrap}><Mail size={20} /></div>
-                <div>
-                  <h4>Email</h4>
-                  <p>info@powerzone.pk</p>
-                </div>
-              </div>
-              <div className={styles.infoItem}>
                 <div className={styles.iconWrap}><MapPin size={20} /></div>
                 <div>
                   <h4>Address</h4>
-                  <p>Maraghzar Colony, Multan Road, Lahore, Pakistan</p>
+                  <p>13-A Maraghzar Colony, Multan Road, Lahore</p>
                 </div>
               </div>
             </div>
