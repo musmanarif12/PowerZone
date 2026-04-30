@@ -8,6 +8,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     '',
     '/shop',
+    '/about',
+    '/services',
+    '/plans',
     '/contact',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
