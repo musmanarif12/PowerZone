@@ -24,6 +24,29 @@ const Navbar = () => {
   const { user, isLoaded, logOut } = useAuth();
   const router = useRouter();
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    
+    if (window.location.pathname === "/") {
+      const element = document.getElementById(id);
+      if (element) {
+        // Scroll to element accounting for fixed navbar height of ~80px
+        const y = element.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    } else {
+      router.push("/");
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const y = element.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 500);
+    }
+  };
+
   const handleLogout = async () => {
     await logOut();
     if (window.location.pathname === "/checkout") {
@@ -54,29 +77,29 @@ const Navbar = () => {
           {/* Desktop Links */}
           <ul className={`${styles.navLinks} ${isOpen ? styles.active : ""}`}>
             <li>
-              <Link href="/#home" onClick={() => setIsOpen(false)}>
+              <a href="#" onClick={(e) => handleNavClick(e, 'home')}>
                 Home
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/#about" onClick={() => setIsOpen(false)}>
+              <a href="#" onClick={(e) => handleNavClick(e, 'about')}>
                 About
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/#services" onClick={() => setIsOpen(false)}>
+              <a href="#" onClick={(e) => handleNavClick(e, 'services')}>
                 Services
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/#plans" onClick={() => setIsOpen(false)}>
+              <a href="#" onClick={(e) => handleNavClick(e, 'plans')}>
                 Plans
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/#contact" onClick={() => setIsOpen(false)}>
+              <a href="#" onClick={(e) => handleNavClick(e, 'contact')}>
                 Contact
-              </Link>
+              </a>
             </li>
             <li>
               <Link href="/shop" onClick={() => setIsOpen(false)}>
