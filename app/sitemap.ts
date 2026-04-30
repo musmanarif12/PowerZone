@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { defaultProducts } from '@/lib/products';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://powerzone.pk';
+  const baseUrl = 'https://www.powerzonefitnessclub.online';
 
   // Static routes
   const staticRoutes = [
