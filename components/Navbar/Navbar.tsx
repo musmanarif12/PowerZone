@@ -76,23 +76,9 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <a 
-                href="#" 
-                onClick={(e) => { 
-                  e.preventDefault(); 
-                  setIsOpen(false); 
-                  if (window.location.pathname !== '/') {
-                    router.push('/');
-                    setTimeout(() => {
-                      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    }, 500);
-                  } else {
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                  }
-                }}
-              >
+              <Link href="/contact" onClick={() => setIsOpen(false)}>
                 Contact
-              </a>
+              </Link>
             </li>
             <li>
               <Link href="/shop" onClick={() => setIsOpen(false)}>

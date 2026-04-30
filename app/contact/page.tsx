@@ -32,7 +32,7 @@ export default function ContactPage() {
                 <div className={styles.iconWrap}><Phone size={20} /></div>
                 <div>
                   <h4>Phone / WhatsApp</h4>
-                  <p>+92 309 4045794</p>
+                  <p>+92 304-4603006</p>
                 </div>
               </div>
               <div className={styles.infoItem}>
