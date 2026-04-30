@@ -23,7 +23,7 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(defaultProducts);
   const [brands, setBrands] = useState<string[]>(BRANDS);
   const [categories, setCategories] = useState<string[]>(CATEGORIES);
   const [isLoaded, setIsLoaded] = useState(false);
